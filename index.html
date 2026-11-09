@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ขายฝากที่ดิน</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#1f6f5c">
+<style>
+:root{--g:#1f6f5c;--bg:#f4f8f6;--ok:#1b7f3b;--warn:#c0392b;--card:#fff;--line:#dbe5e0}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Noto Sans Thai",sans-serif;background:var(--bg);color:#222;font-size:17px}
+header{background:var(--g);color:#fff;padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+main{max-width:720px;margin:0 auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+h2{margin:0 0 8px;font-size:18px}label{display:block;font-size:14px;color:#555;margin-top:8px}
+input,select,textarea{width:100%;padding:12px;font-size:18px;border:1px solid #b5c4bd;border-radius:8px;background:#fff;font-family:inherit}
+textarea{min-height:120px}
+.row{display:flex;gap:10px}.row>*{flex:1}
+button{padding:12px 14px;font-size:17px;border:0;border-radius:10px;background:var(--g);color:#fff;font-weight:600;width:100%;margin-top:8px;cursor:pointer}
+button:active{filter:brightness(.9)}
+.b-blue{background:#1f6fb2}.b-green{background:#2e8b57}.b-orange{background:#e67e22}.b-teal{background:#138d90}.b-gray{background:#6b6b6b}
+button.red{background:var(--warn)}button.sm{width:auto;padding:6px 10px;font-size:14px;margin:0 4px 0 0}
+.big{font-size:22px;font-weight:700}.ok{color:var(--ok)}.bad{color:var(--warn)}
+.note{border-left:6px solid var(--g);padding:8px 10px;background:#eaf5f0;border-radius:8px;margin:6px 0;font-size:15px}
+.note.warn{border-color:#e67e22;background:#fff4e5}.note.error{border-color:var(--warn);background:#fdecea}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}th:first-child,td:first-child{text-align:left}
+.small{font-size:13px;color:#666}.hide{display:none}
+details summary{font-weight:700;cursor:pointer;padding:4px 0;font-size:18px}
+.grp{border-top:1px solid var(--line);margin-top:12px;padding-top:6px;font-weight:700;color:#14503f}
+.sum td{font-size:16px}.tot td{font-weight:700;font-size:18px}
+</style>
+</head>
+<body>
+<header><span>ระบบขายฝากที่ดิน</span><span id="net" class="small" style="color:#fff"></span></header>
+<main>
+
+<div class="card"><h2>1) ข้อมูลที่ดินและสัญญา</h2>
+<label>ชื่อเคส (ไม่บังคับ)</label><input id="f_name" data-in type="text" placeholder="เช่น โฉนด 1234 คุณสมชาย">
+<div class="row"><div><label>ราคาประเมินราชการ (บาท)</label><input id="f_appr" data-in type="number" inputmode="decimal" step="any"></div>
+<div><label>จำนวนแปลง</label><input id="f_plots" data-in type="number" inputmode="numeric" step="1" min="1"></div></div>
+<div class="row"><div><label>สัดส่วนรับฝาก (% ของราคาประเมิน)</label><input id="f_ratio" data-in type="number" inputmode="decimal" step="any"></div>
+<div><label>หรือกรอกวงเงินเอง (บาท)</label><input id="f_loan" data-in type="number" inputmode="decimal" step="any" placeholder="เว้นว่าง = ใช้สัดส่วน"></div></div>
+<div class="grp">ผู้ขายฝากและที่ดิน</div>
+<div class="row"><div><label>ผู้ขายฝาก (เจ้าของที่ดิน) เป็น</label><select id="f_dtype" data-in><option value="person">บุคคลธรรมดา</option><option value="company">นิติบุคคล</option></select></div>
+<div><label>ผู้ซื้อฝาก (นายทุน) เป็น</label><select id="f_btype" data-in><option value="person">บุคคลธรรมดา</option><option value="company">นิติบุคคล</option></select></div></div>
+<div class="row"><div><label>ถือครองมาแล้ว (ปี)</label><input id="f_held" data-in type="number" inputmode="decimal" step="any"></div>
+<div><label>ประเภทที่ดิน</label><select id="f_resi" data-in><option value="1">ที่อยู่อาศัย</option><option value="0">อื่นๆ (เช่น ที่ดินเปล่า)</option></select></div></div>
+<label>ชื่อในทะเบียนบ้านครบ 1 ปี (เฉพาะที่อยู่อาศัย)</label><select id="f_reg" data-in><option value="0">ไม่ใช่</option><option value="1">ใช่</option></select>
+<div class="small">ถือครองครบ 5 ปี หรือที่อยู่อาศัยที่มีชื่อในทะเบียนบ้านครบ 1 ปี จะไม่เสียภาษีธุรกิจเฉพาะ</div>
+<div class="grp">เงื่อนไขสัญญา</div>
+<div class="row"><div><label>ดอกเบี้ย (% ต่อปี)</label><input id="f_int" data-in type="number" inputmode="decimal" step="any"></div>
+<div><label>ระยะเวลาไถ่ (ปี)</label><input id="f_years" data-in type="number" inputmode="decimal" step="any"></div></div>
+<div class="row"><div><label>ค่าปากถุง/นายหน้า (% ของวงเงิน)</label><input id="f_broker" data-in type="number" inputmode="decimal" step="any"></div>
+<div><label>ค่าปากถุงนี้เข้าผู้ซื้อฝากเอง?</label><select id="f_bb" data-in><option value="0">ไม่ใช่ (จ่ายนายหน้า)</option><option value="1">ใช่ (นับเป็นผลตอบแทน)</option></select></div></div>
+<div class="row"><div><label>หนี้เดิมที่ต้องไถ่ถอน (บาท)</label><input id="f_debt" data-in type="number" inputmode="decimal" step="any"></div>
+<div><label>วันที่ทำสัญญา</label><input id="f_start" data-in type="date"></div></div>
+<div class="grp">แผนต่อสัญญารายปี (ไม่ต่อ = ใส่ 0)</div>
+<div class="row"><div><label>ต่อสัญญากี่ครั้ง</label><input id="f_ren_n" data-in type="number" inputmode="numeric" step="1" min="0"></div>
+<div><label>ต่อครั้งละกี่ปี</label><input id="f_ren_y" data-in type="number" inputmode="decimal" step="any"></div></div>
+<div class="row"><div><label>ดอกเบี้ยตอนต่อ (% ต่อปี เว้นว่าง = เท่าเดิม)</label><input id="f_ren_int" data-in type="number" inputmode="decimal" step="any"></div>
+<div><label>ค่านายหน้าต่อสัญญา (% ของวงเงิน/ครั้ง)</label><input id="f_ren_brk" data-in type="number" inputmode="decimal" step="any"></div></div>
+<label>ค่าธรรมเนียมต่อสัญญาที่กรมที่ดิน ใครจ่าย</label><select id="f_ren_share" data-in><option value="1">ผู้ขายฝาก</option><option value="0.5">ครึ่งต่อครึ่ง</option><option value="0">ผู้ซื้อฝาก</option></select>
+<details data-k="who" style="margin-top:10px"><summary>ใครเป็นผู้จ่าย (ปรับตามที่ตกลง)</summary>
+<div class="small">วันทำสัญญา: ผู้ขายฝากจ่าย / ครึ่งต่อครึ่ง / ผู้ซื้อฝากจ่าย</div>
+<div class="row"><div><label>ค่าจดทะเบียน</label><select id="s_fee" data-in><option value="1">ผู้ขายฝาก</option><option value="0.5">ครึ่งต่อครึ่ง</option><option value="0">ผู้ซื้อฝาก</option></select></div>
+<div><label>อากรแสตมป์</label><select id="s_stamp" data-in><option value="1">ผู้ขายฝาก</option><option value="0.5">ครึ่งต่อครึ่ง</option><option value="0">ผู้ซื้อฝาก</option></select></div></div>
+<div class="row"><div><label>ภาษีธุรกิจเฉพาะ</label><select id="s_sbt" data-in><option value="1">ผู้ขายฝาก</option><option value="0.5">ครึ่งต่อครึ่ง</option><option value="0">ผู้ซื้อฝาก</option></select></div>
+<div><label>ภาษีหัก ณ ที่จ่าย</label><select id="s_wht" data-in><option value="1">ผู้ขายฝาก</option><option value="0.5">ครึ่งต่อครึ่ง</option><option value="0">ผู้ซื้อฝาก</option></select></div></div>
+<div class="small" style="margin-top:8px">วันไถ่ถอน:</div>
+<div class="row"><div><label>ภาษีหัก ณ ที่จ่าย</label><select id="r_wht" data-in><option value="1">ผู้ขายฝาก</option><option value="0.5">ครึ่งต่อครึ่ง</option><option value="0">ผู้ซื้อฝาก</option></select></div>
+<div><label>อากรแสตมป์</label><select id="r_stamp" data-in><option value="1">ผู้ขายฝาก</option><option value="0.5">ครึ่งต่อครึ่ง</option><option value="0">ผู้ซื้อฝาก</option></select></div></div>
+<label>ค่าธรรมเนียมไถ่ถอน</label><select id="r_fee" data-in><option value="1">ผู้ขายฝาก</option><option value="0.5">ครึ่งต่อครึ่ง</option><option value="0">ผู้ซื้อฝาก</option></select>
+</details>
+</div>
+
+<div id="warn"></div>
+
+<div class="card"><details data-k="day" open><summary>2) วันทำสัญญา ค่าใช้จ่ายและเงินสุทธิ</summary><div id="day"></div></details></div>
+<div class="card"><details data-k="term" open><summary>3) ตลอดสัญญา ดอกเบี้ยและต้นทุนรวม</summary><div id="term"></div>
+<details data-k="sched" style="margin-top:8px"><summary>ตารางรายปี</summary><div id="sched"></div></details></details></div>
+<div class="card"><details data-k="red"><summary>4) วันไถ่ถอน (ครบกำหนด)</summary><div id="red"></div></details></div>
+<div class="card"><details data-k="early"><summary>5) ไถ่ก่อนกำหนด</summary>
+<div class="row"><div><label>ผ่านไปแล้ว (เดือน)</label><input id="f_elapsed" data-in type="number" inputmode="decimal" step="any"></div>
+<div><label>ค่าเสียโอกาส (% ต่อปี ไม่เกินเพดาน)</label><input id="f_opp" data-in type="number" inputmode="decimal" step="any"></div></div>
+<div id="early"></div></details></div>
+<div class="card"><details data-k="dates" open><summary>6) วันสำคัญ</summary><div id="dates"></div></details></div>
+
+<div class="card"><details data-k="plan" open><summary>7) แผนต่อสัญญารายปี</summary><div id="plan"></div></details></div>
+
+<div class="card"><details data-k="ledger"><summary>8) สมุดบันทึกการต่อสัญญาจริง</summary>
+<div class="small">เลือกเคสที่บันทึกไว้ แล้วบันทึกทุกครั้งที่จดทะเบียนต่อสัญญา แอปจะเลื่อนวันครบกำหนดให้</div>
+<label>เคส</label><select id="l_case"></select>
+<div id="l_sum"></div>
+<div id="l_list"></div>
+<div class="grp">บันทึกการต่อสัญญาครั้งใหม่</div>
+<div class="row"><div><label>วันที่จดทะเบียนต่อ</label><input id="l_date" type="date"></div>
+<div><label>ต่อกี่ปี</label><input id="l_years" type="number" inputmode="decimal" step="any"></div></div>
+<div class="row"><div><label>ดอกที่จ่ายจริง (บาท)</label><input id="l_int" type="number" inputmode="decimal" step="any"></div>
+<div><label>ค่าธรรมเนียมที่จ่ายจริง (บาท)</label><input id="l_fee" type="number" inputmode="decimal" step="any"></div></div>
+<label>หมายเหตุ</label><input id="l_note" type="text">
+<button id="l_fill" class="b-orange">เติมค่าแนะนำ</button>
+<button id="l_add" class="b-green">＋ บันทึกการต่อสัญญา</button>
+</details></div>
+
+<div class="card"><details data-k="cases"><summary>เคสที่บันทึกไว้และเปรียบเทียบ</summary>
+<button id="caseSave" class="b-green">＋ บันทึกเคสนี้</button>
+<div id="cases"></div></details></div>
+
+<div class="card"><details data-k="rates"><summary>ตั้งค่าอัตราภาษีและค่าธรรมเนียม</summary>
+<div class="small" id="ratesInfo"></div>
+<div class="grp">ค่าธรรมเนียมและภาษี</div>
+<div class="row"><div><label>ค่าจดทะเบียนขายฝาก (%)</label><input id="rt_reg" type="number" step="any"></div>
+<div><label>ฐานคิดค่าจดทะเบียน</label><select id="rt_regb"><option value="higher">ราคาที่สูงกว่า</option><option value="appraisal">ราคาประเมิน</option><option value="price">ราคาขายฝาก</option></select></div></div>
+<div class="row"><div><label>อากรแสตมป์ (%)</label><input id="rt_stamp" type="number" step="any"></div>
+<div><label>ภาษีธุรกิจเฉพาะ (%)</label><input id="rt_sbt" type="number" step="any"></div></div>
+<div class="row"><div><label>ถือครองครบ (ปี) ยกเว้นภาษีธุรกิจเฉพาะ</label><input id="rt_sbty" type="number" step="any"></div>
+<div><label>ภาษีหัก ณ ที่จ่ายนิติบุคคล (%)</label><input id="rt_co" type="number" step="any"></div></div>
+<div class="row"><div><label>ค่าคำขอ (บาท/แปลง)</label><input id="rt_req" type="number" step="any"></div>
+<div><label>ค่าพยาน (บาท/แปลง)</label><input id="rt_wit" type="number" step="any"></div></div>
+<label>ค่าจดทะเบียนไถ่ถอน (บาท/แปลง)</label><input id="rt_red" type="number" step="any">
+<label>ค่าจดทะเบียนขยายเวลาไถ่ (บาท/แปลง)</label><input id="rt_ext" type="number" step="any">
+<div class="grp">ภาษีเงินได้หัก ณ ที่จ่าย (บุคคลธรรมดา)</div>
+<label>ค่าใช้จ่ายเหมา % ปีที่ 1,2,3... (คั่นด้วยจุลภาค ตัวสุดท้ายใช้กับปีที่เกิน)</label><input id="rt_exp" type="text">
+<label>จำนวนปีสูงสุดที่ใช้หาร</label><input id="rt_maxy" type="number" step="any">
+<label>ขั้นบันได 1 บรรทัดต่อขั้น รูปแบบ เงินได้สูงสุด:อัตรา% บรรทัดสุดท้ายใช้ - (ไม่จำกัด)</label><textarea id="rt_br"></textarea>
+<div class="grp">กฎสัญญา</div>
+<div class="row"><div><label>เพดานผลตอบแทน (% ต่อปี)</label><input id="rt_cap" type="number" step="any"></div>
+<div><label>ค่าเสียโอกาสสูงสุด (% ต่อปี)</label><input id="rt_opp" type="number" step="any"></div></div>
+<div class="row"><div><label>ระยะเวลาไถ่ต่ำสุด (ปี)</label><input id="rt_miny" type="number" step="any"></div>
+<div><label>สูงสุด (ปี)</label><input id="rt_maxyr" type="number" step="any"></div></div>
+<div class="row"><div><label>แจ้งก่อนครบกำหนดอย่างน้อย (เดือน)</label><input id="rt_nmin" type="number" step="any"></div>
+<div><label>และไม่เกิน (เดือน)</label><input id="rt_nmax" type="number" step="any"></div></div>
+<label>ไถ่ได้เพิ่มถ้าไม่ได้รับหนังสือแจ้ง (เดือน)</label><input id="rt_grace" type="number" step="any">
+<button id="ratesSave">บันทึกอัตรา</button>
+<button id="ratesReset" class="b-gray">คืนค่าตั้งต้น</button>
+</details></div>
+
+<div class="card"><details data-k="bak"><summary>สำรองข้อมูล</summary>
+<button class="b-blue" id="exp">💾 ส่งออกไฟล์สำรอง (JSON)</button>
+<button class="b-green" id="expCsv">📄 ส่งออกตารางเคส (CSV)</button>
+<button class="b-teal" id="imp">📥 นำเข้าไฟล์สำรอง</button><input id="impFile" type="file" accept=".json" class="hide">
+<div class="small">ควรส่งออกไฟล์สำรองเป็นประจำ ข้อมูลเก็บอยู่ในเบราว์เซอร์เครื่องนี้</div>
+<button class="red" id="reset">🗑 ล้างข้อมูลทั้งหมด</button></details></div>
+
+<div class="small" style="padding:4px 4px 20px">ผลลัพธ์เป็นการประมาณตามอัตราที่ตั้งไว้ ไม่ใช่คำแนะนำทางกฎหมายหรือภาษี ตรวจกับสำนักงานที่ดินและกรมสรรพากรก่อนใช้งานจริง</div>
+</main>
+<script src="rates.js"></script>
+<script src="calc.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
